@@ -1,0 +1,40 @@
+{
+  "engine": {
+    "enabled": true,
+    "sensitivity": 1.0,
+    "max_latency": 0.001
+  },
+  "ai": {
+    "enabled": true,
+    "learning_rate": 0.1,
+    "min_samples": 50
+  },
+  "security": {
+    "stealth_mode": true,
+    "randomization": 0.15,
+    "level": "high"
+  },
+  "gui": {
+    "theme": "dark",
+    "window_size": [1200, 800],
+    "always_on_top": false
+  },
+  "hotkeys": {
+    "toggle_engine": "f1",
+    "next_weapon": "f2",
+    "calibrate": "f3"
+  },
+  "games": {
+    "auto_detect": true,
+    "scan_interval": 2.0
+  },
+  "performance": {
+    "max_history_size": 10000,
+    "metrics_interval": 1.0
+  },
+  "logging": {
+    "level": "INFO",
+    "file_enabled": true,
+    "console_enabled": true
+  }
+}
