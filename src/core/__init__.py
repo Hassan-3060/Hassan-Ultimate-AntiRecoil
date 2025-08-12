@@ -1,0 +1,1 @@
+"""Core anti-recoil functionality package."""
