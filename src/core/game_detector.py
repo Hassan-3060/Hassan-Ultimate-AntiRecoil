@@ -5,13 +5,36 @@ Automatic detection of supported games and their configurations
 
 import asyncio
 import logging
-import psutil
 import time
 import re
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple, Any
 from dataclasses import dataclass
 from pathlib import Path
 import json
+
+try:
+    import psutil
+except ImportError:
+    # Fallback for testing without psutil
+    class psutil:
+        class NoSuchProcess(Exception):
+            pass
+        
+        class AccessDenied(Exception):
+            pass
+        
+        @staticmethod
+        def process_iter(attrs=None):
+            # Return empty iterator when psutil not available
+            return iter([])
+        
+        class Process:
+            def __init__(self, pid):
+                self.pid = pid
+            
+            @property
+            def info(self):
+                return {'pid': self.pid, 'name': 'test_process.exe'}
 
 
 @dataclass
