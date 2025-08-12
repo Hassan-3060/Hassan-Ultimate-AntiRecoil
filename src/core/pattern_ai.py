@@ -5,7 +5,6 @@ Advanced machine learning for adaptive recoil pattern recognition and compensati
 
 import asyncio
 import logging
-import numpy as np
 import pickle
 import json
 from typing import Dict, List, Optional, Tuple, Any
@@ -19,6 +18,7 @@ try:
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import mean_squared_error
     import joblib
+    import numpy as np
 except ImportError:
     # Fallback for minimal functionality
     RandomForestRegressor = None
@@ -26,6 +26,31 @@ except ImportError:
     train_test_split = None
     mean_squared_error = None
     joblib = None
+    
+    # Fallback numpy functions
+    class np:
+        @staticmethod
+        def var(data):
+            if not data:
+                return 0
+            mean = sum(data) / len(data)
+            return sum((x - mean) ** 2 for x in data) / len(data)
+        
+        @staticmethod
+        def mean(data):
+            return sum(data) / len(data) if data else 0
+        
+        @staticmethod
+        def array(data):
+            return data
+        
+        @staticmethod
+        def std(data):
+            if not data:
+                return 0
+            mean = sum(data) / len(data)
+            variance = sum((x - mean) ** 2 for x in data) / len(data)
+            return variance ** 0.5
 
 
 @dataclass
@@ -340,7 +365,7 @@ class PatternAI:
         except Exception as e:
             self.logger.error(f"Error retraining model: {e}")
     
-    def _prepare_training_data(self) -> Tuple[np.ndarray, np.ndarray]:
+    def _prepare_training_data(self) -> Tuple[Any, Any]:
         """Prepare training data from shot history."""
         features = []
         targets = []
@@ -366,11 +391,11 @@ class PatternAI:
                 features.append(feature)
                 targets.append(target)
             
-            return np.array(features), np.array(targets)
+            return features, targets
             
         except Exception as e:
             self.logger.error(f"Error preparing training data: {e}")
-            return np.array([]), np.array([])
+            return [], []
     
     def get_adaptive_adjustment(self, pattern, shot_index: int) -> Optional[Tuple[float, float]]:
         """Get AI-powered adaptive adjustment for recoil compensation."""
@@ -379,7 +404,7 @@ class PatternAI:
                 return None
             
             # Prepare input features
-            features = np.array([[
+            features = [
                 shot_index,
                 hash(pattern.weapon_name) % 1000,
                 hash(pattern.game) % 1000,
@@ -387,7 +412,7 @@ class PatternAI:
                 0.0,
                 0.0,  # No player input yet
                 0.0
-            ]])
+            ]
             
             # Scale features
             features_scaled = self.scaler.transform(features)
@@ -451,12 +476,12 @@ class PatternAI:
             pattern = []
             
             for i in range(shot_count):
-                features = np.array([[
+                features = [
                     i,
                     hash(weapon) % 1000,
                     hash(game) % 1000,
                     0.0, 0.0, 0.0, 0.0
-                ]])
+                ]
                 
                 features_scaled = self.scaler.transform(features)
                 prediction = self.recoil_model.predict(features_scaled)[0]

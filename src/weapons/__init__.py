@@ -1,0 +1,1 @@
+"""Weapons package for Hassan Ultimate Anti-Recoil."""

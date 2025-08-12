@@ -12,7 +12,21 @@ import os
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 from enum import Enum
-import psutil
+
+try:
+    import psutil
+except ImportError:
+    # Fallback for testing without psutil
+    class psutil:
+        class NoSuchProcess(Exception):
+            pass
+        
+        class AccessDenied(Exception):
+            pass
+        
+        @staticmethod
+        def process_iter(attrs=None):
+            return iter([])
 
 try:
     import numpy as np
