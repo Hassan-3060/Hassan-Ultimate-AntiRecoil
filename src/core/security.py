@@ -14,6 +14,22 @@ from dataclasses import dataclass
 from enum import Enum
 import psutil
 
+try:
+    import numpy as np
+except ImportError:
+    # Fallback for numpy operations
+    class np:
+        @staticmethod
+        def var(data):
+            if not data:
+                return 0
+            mean = sum(data) / len(data)
+            return sum((x - mean) ** 2 for x in data) / len(data)
+        
+        @staticmethod
+        def mean(data):
+            return sum(data) / len(data) if data else 0
+
 
 class SecurityLevel(Enum):
     """Security operation levels."""

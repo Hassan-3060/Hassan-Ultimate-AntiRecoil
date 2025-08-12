@@ -1,0 +1,1 @@
+"""GUI package for Hassan Ultimate Anti-Recoil."""
